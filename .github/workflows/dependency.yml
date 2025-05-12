@@ -1,0 +1,30 @@
+name: workflow dependant
+on: push
+jobs:
+  job-on-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - run: date
+      - run: pwd
+  job-on-windows:
+    name: a job on windows
+    runs-on: windows-latest
+    steps:
+      - name: first step
+        run: date
+      - run: ls -la
+  dependent-job-1:
+    needs: [job-on-ubuntu,job-on-windows]
+    runs-on: macos-latest
+    name: job1 on mac
+    steps:
+      - run: pwd
+      - name: new step
+        run: ls
+      - run: env
+  dependent-job-2:
+    needs: [dependent-job-1]
+    runs-on: ubuntu-latest
+    name: job final
+    steps:
+      - run: echo WT!!!
